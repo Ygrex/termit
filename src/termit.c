@@ -170,15 +170,21 @@ void termit_create_menubar()
     GtkWidget* menu_bar = gtk_menu_bar_new();
 
     // File menu
-    GtkWidget *mi_new_tab = termit_lua_menu_item_from_stock(GTK_STOCK_ADD, "openTab");
-    GtkWidget *mi_close_tab = termit_lua_menu_item_from_stock(GTK_STOCK_DELETE, "closeTab");
+    GtkWidget *mi_new_tab = NULL;
+    GtkWidget *mi_close_tab = NULL;
+    if (! configs.single_tab_mode) {
+        mi_new_tab = termit_lua_menu_item_from_stock(GTK_STOCK_ADD, "openTab");
+        mi_close_tab = termit_lua_menu_item_from_stock(GTK_STOCK_DELETE, "closeTab");
+    }
     GtkWidget *mi_exit = termit_lua_menu_item_from_stock(GTK_STOCK_QUIT, "quit");
 
     GtkWidget *mi_file = gtk_menu_item_new_with_label(_("File"));
     GtkWidget *file_menu = gtk_menu_new();
 
-    gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), mi_new_tab);
-    gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), mi_close_tab);
+    if (! configs.single_tab_mode) {
+        gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), mi_new_tab);
+        gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), mi_close_tab);
+    }
     gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), mi_exit);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(mi_file), file_menu);
@@ -222,10 +228,18 @@ void termit_create_menubar()
 
 void termit_create_popup_menu()
 {
+    gint items_offset; /* offset for custom menu entries */
     termit.menu = gtk_menu_new();
 
-    GtkWidget *mi_new_tab = termit_lua_menu_item_from_stock(GTK_STOCK_ADD, "openTab");
-    GtkWidget *mi_close_tab = termit_lua_menu_item_from_stock(GTK_STOCK_DELETE, "closeTab");
+    GtkWidget *mi_new_tab = NULL;
+    GtkWidget *mi_close_tab = NULL;
+    if (! configs.single_tab_mode) {
+        mi_new_tab = termit_lua_menu_item_from_stock(GTK_STOCK_ADD, "openTab");
+        mi_close_tab = termit_lua_menu_item_from_stock(GTK_STOCK_DELETE, "closeTab");
+        items_offset = 6;
+    } else {
+        items_offset = 3;
+    }
     GtkWidget *mi_set_tab_name = termit_lua_menu_item_from_string(_("Set tab name..."), "setTabTitleDlg");
     GtkWidget *mi_edit_preferences = termit_lua_menu_item_from_stock(GTK_STOCK_PREFERENCES, "preferencesDlg");
     GtkWidget *mi_copy = termit_lua_menu_item_from_stock(GTK_STOCK_COPY, "copy");
@@ -235,9 +249,11 @@ void termit_create_popup_menu()
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(termit.mi_show_scrollbar), configs.show_scrollbar);
     termit_set_show_scrollbar_signal(termit.mi_show_scrollbar, NULL);
 
-    gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), mi_new_tab);
-    gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), mi_close_tab);
-    gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), gtk_separator_menu_item_new());
+    if (! configs.single_tab_mode) {
+        gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), mi_new_tab);
+        gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), mi_close_tab);
+        gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), gtk_separator_menu_item_new());
+    }
     gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), mi_set_tab_name);
     gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), termit.mi_show_scrollbar);
     gtk_menu_shell_append(GTK_MENU_SHELL(termit.menu), mi_edit_preferences);
@@ -269,13 +285,13 @@ void termit_create_popup_menu()
             if (utils_menu) {
                 gtk_menu_shell_append(GTK_MENU_SHELL(utils_menu), mi_tmp);
             } else {
-                gtk_menu_shell_insert(GTK_MENU_SHELL(termit.menu), mi_tmp, 6);
+                gtk_menu_shell_insert(GTK_MENU_SHELL(termit.menu), mi_tmp, items_offset);
             }
             g_signal_connect(G_OBJECT(mi_tmp), "activate",
                 G_CALLBACK(termit_on_menu_item_selected), NULL);
         }
         if (mi_util) {
-            gtk_menu_shell_insert(GTK_MENU_SHELL(termit.menu), mi_util, 6);
+            gtk_menu_shell_insert(GTK_MENU_SHELL(termit.menu), mi_util, items_offset);
         }
     }
 

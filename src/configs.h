@@ -39,6 +39,7 @@ struct Configs
     GArray* mouse_bindings;     // MouseBinding
     GArray* matches;            // Match
     gboolean hide_single_tab;
+    gboolean single_tab_mode;
     gboolean show_scrollbar;
     gboolean hide_menubar;
     gboolean hide_tabbar;
