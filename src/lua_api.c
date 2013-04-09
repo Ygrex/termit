@@ -707,7 +707,7 @@ struct TermitLuaFunction
     {"setTabTitleDlg", termit_lua_setTabTitleDialog, 0},
     {"setWindowTitle", termit_lua_setWindowTitle, 0},
     {"spawn", termit_lua_spawn, 0},
-    {"showMenubar", termit_lua_toggleMenubar, 0},
+    {"showMenubar", termit_lua_showMenubar, 0},
     {"toggleMenubar", termit_lua_toggleMenubar, 0},
     {"toggleTabbar", termit_lua_toggleTabbar, 0}
 };
