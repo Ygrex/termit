@@ -129,6 +129,12 @@ gchar* termit_get_pid_dir(pid_t pid)
 }
 
 
+void termit_show_menubar()
+{
+    gtk_widget_show(GTK_WIDGET(termit.hbox));
+    configs.hide_menubar = 0;
+}
+
 void termit_toggle_menubar()
 {
     if (configs.hide_menubar) {

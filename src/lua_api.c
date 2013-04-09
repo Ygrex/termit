@@ -214,6 +214,12 @@ static int termit_lua_bindMouse(lua_State* ls)
     return 0;
 }
 
+static int termit_lua_showMenubar(lua_State* ls)
+{
+    termit_show_menubar();
+    return 0;
+}
+
 static int termit_lua_toggleMenubar(lua_State* ls)
 {
     termit_toggle_menubar();
@@ -701,6 +707,7 @@ struct TermitLuaFunction
     {"setTabTitleDlg", termit_lua_setTabTitleDialog, 0},
     {"setWindowTitle", termit_lua_setWindowTitle, 0},
     {"spawn", termit_lua_spawn, 0},
+    {"showMenubar", termit_lua_toggleMenubar, 0},
     {"toggleMenubar", termit_lua_toggleMenubar, 0},
     {"toggleTabbar", termit_lua_toggleTabbar, 0}
 };
